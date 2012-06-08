@@ -24,21 +24,37 @@ except ImportError:
 
 define("port", default=8080, help="run on the given port", type=int)
 
-class iframeHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self, *args, **kwargs):
+        """
+        Wrap the default RequestHandler with extra methods
+        """    
+        super(BaseHandler,self).__init__(*args,**kwargs)
+
+class iframeHandler(BaseHandler):
     def get(self,x,y,url):
         url = url + "?" + self.request.query
-        print(x)
-        print(y)
-        print(url)
         self.write("<iframe class='embedis' type='text/html' width='" + x + "' height='" + y  +"' src='http://embed.is/url/" +x + "/"+y+"/"+url +"' frameborder='0' marginheight='0' marginwidth='0' scrolling='no'></iframe>")
       
-class URLHandler(tornado.web.RequestHandler):
+class URLHandler(BaseHandler):
     def get(self,x,y,url):
         url = url + "?" + self.request.query
+        if url[:6] == 'http:/':
+            if url[6] != '/':
+                url = 'http://' + url[6:]
+        if url[:7] == 'https:/':
+            if url[7] != '/':
+                url = 'https://' + url[7:]
+        print(url)
         emb = embedis.embedis(x,y)
-        self.write(emb.lookup(url))       
+        result = emb.lookup(url)
+        if result is None:
+            self.set_status(204)
+        else:
+            self.set_status(200)
+            self.write(result)       
 
-class ScramHandler(tornado.web.RequestHandler):
+class ScramHandler(BaseHandler):
     def get(self,anything='whatever'):
         self.write("The services which run on this site are not for the general public at the current time.<br> Thanks for understanding!")
 
