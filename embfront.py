@@ -30,7 +30,7 @@ class iframeHandler(tornado.web.RequestHandler):
         print(x)
         print(y)
         print(url)
-        self.write("<iframe class='embedis' type='text/html' width='" + x + "' height='" + y  +"' src='/url/" +x + "/"+y+"/"+url +"' frameborder='0' marginheight='0' marginwidth='0' scrolling='no'></iframe>")
+        self.write("<iframe class='embedis' type='text/html' width='" + x + "' height='" + y  +"' src='http://embed.is/url/" +x + "/"+y+"/"+url +"' frameborder='0' marginheight='0' marginwidth='0' scrolling='no'></iframe>")
       
 class URLHandler(tornado.web.RequestHandler):
     def get(self,x,y,url):
@@ -38,10 +38,17 @@ class URLHandler(tornado.web.RequestHandler):
         emb = embedis.embedis(x,y)
         self.write(emb.lookup(url))       
 
+class ScramHandler(tornado.web.RequestHandler):
+    def get(self,anything='whatever'):
+        self.write("The services which run on this site are not for the general public at the current time.<br> Thanks for understanding!")
+
 def main():
+    print("Embedis is now listening.")
     application = tornado.web.Application([
         (r"/iframe/([0-9]+)/([0-9]+)/(.*)", iframeHandler),
         (r"/url/([0-9]+)/([0-9]+)/(.*)", URLHandler),
+        (r"/(.*)", ScramHandler),
+        (r"/", ScramHandler),
     ])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
