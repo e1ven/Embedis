@@ -1,6 +1,6 @@
 from urllib.parse import urlparse,parse_qs
 import urllib.request, urllib.parse, urllib.error
-import re,json
+import re,json,pprint
 
 class embedis:
     """Embedis is a quick class/API for translating embeddable media"""
@@ -10,7 +10,7 @@ class embedis:
         self.x = str(x)
         self.y = str(y)
 
-        self.functionlist =  [self.youtube,
+        self.functionlist =  [self.img,
                          self.vimeo,
                          self.embedly,
                         ]
@@ -59,6 +59,15 @@ class embedis:
             return None
         else:
             return None
+
+
+    def img(self):
+        """
+        Check to see if it's a valid image
+        """
+        contents,headers = urllib.request.urlretrieve(self.url)
+        if "image" in headers['Content-Type']:
+            return "<img src='" + self.url + "' />"
 
 
     def embedly(self):
