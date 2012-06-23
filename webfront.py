@@ -67,6 +67,8 @@ def main():
         (r"/iframe/([0-9]+)/([0-9]+)/(.*)", iframeHandler),
         (r"/url/([0-9]+)/([0-9]+)/(.*)", URLHandler),
         (r"/(.*)", ScramHandler),
+        (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": "images/")}),
+
         (r"/", ScramHandler),
     ])
     http_server = tornado.httpserver.HTTPServer(application)
