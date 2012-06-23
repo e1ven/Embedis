@@ -1,6 +1,7 @@
 from urllib.parse import urlparse,parse_qs
 import urllib.request, urllib.parse, urllib.error
 import re,json,pprint
+import Image, hashlib
 
 class embedis:
     """Embedis is a quick class/API for translating embeddable media"""
@@ -66,9 +67,31 @@ class embedis:
         """
         Check to see if it's a valid image
         """
-        contents,headers = urllib.request.urlretrieve(self.url)
-        if headers['Content-Type'] in ['image/gif', 'image/jpeg', 'image/pjpeg','image/png']:
-            return "<img src='" + self.url + "' />"
+        try:
+            filename,headers = urllib.request.urlretrieve(self.url)
+            if headers['Content-Type'] in ['image/gif', 'image/jpeg', 'image/pjpeg','image/png']:
+                # The server claims it's an image.
+                img= Image.open(filename)
+                print("saved to "+ filename)
+                if img.size[0] < self.x and img.size[1] < self.y:
+                    return "<img src='" + self.url + "' />"
+                else:
+                    im = im.resize((150),Image.ANTIALIAS)
+
+                    #Hash the file in chunks
+                    SHA512 = hashlib.sha512()
+                    File = open(filename, 'rb')
+                    while True:
+                        buf = File.read(0x100000)
+                        if not buf:
+                            break
+                        SHA512.update(buf)
+                    File.close()
+                    digest = SHA512.hexdigest()
+                    img.save('/opt/Embedis/images/' + digest)
+                    return "<a href='self.url'><img src='/images/" + digest + "'></a>"
+        except:
+            return None
 
 
     def embedly(self):
