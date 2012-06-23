@@ -89,7 +89,7 @@ class embedis:
                     File.close()
                     digest = SHA512.hexdigest()
                     img.save('/opt/Embedis/images/' + digest + '.png')
-                    return "<a href='" + self.url + "'><img src='/images/" + digest + ".png'></a>"
+                    return "<a target='_parent' href='" + self.url + "'><img src='/images/" + digest + ".png'></a>"
         except:
             return None
 
