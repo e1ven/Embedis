@@ -76,7 +76,20 @@ class embedis:
                 if img.size[0] < int(self.x) and int(img.size[1]) < self.y:
                     return "<img src='" + self.url + "' />"
                 else:
-                    img = img.resize((self.x,self.y),Image.ANTIALIAS)
+                    # There is a bug in PIL, where .thumbnail doesn't work right in 2.7+
+                    # So let's manually keep the aspect ratio
+
+                    imAspect = float(image.size[0])/float(image.size[1])
+
+                    if image.size[0] > int(self.x):
+                        newx = int(self.x)
+                        newy = int(self.x * imAspect)
+                    if image.size[1] > int(self.y):
+                        newy = int(self.y)
+                        newx = int(self.x * imAspect)
+                    
+
+                    img = img.resize((newx,newy),Image.NEAREST)
 
                     #Hash the file in chunks
                     SHA512 = hashlib.sha512()
