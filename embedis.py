@@ -73,10 +73,10 @@ class embedis:
                 # The server claims it's an image.
                 img= Image.open(filename)
                 print("saved to "+ filename)
-                if img.size[0] < self.x and img.size[1] < self.y:
+                if img.size[0] < int(self.x) and int(img.size[1]) < self.y:
                     return "<img src='" + self.url + "' />"
                 else:
-                    im = im.resize((150),Image.ANTIALIAS)
+                    img = img.resize((150,150),Image.ANTIALIAS)
 
                     #Hash the file in chunks
                     SHA512 = hashlib.sha512()
@@ -88,7 +88,7 @@ class embedis:
                         SHA512.update(buf)
                     File.close()
                     digest = SHA512.hexdigest()
-                    img.save('/opt/Embedis/images/' + digest)
+                    img.save('/opt/Embedis/images/' + digest,format='png')
                     return "<a href='self.url'><img src='/images/" + digest + "'></a>"
         except:
             return None
