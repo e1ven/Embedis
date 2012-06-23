@@ -8,7 +8,7 @@ import tornado.options
 import tornado.web
 import tornado.escape
 import socket
-import json
+import json,os
 from collections import OrderedDict
 from tornado.options import define, options
 import urllib.request, urllib.parse, urllib.error
@@ -66,8 +66,8 @@ def main():
     application = tornado.web.Application([
         (r"/iframe/([0-9]+)/([0-9]+)/(.*)", iframeHandler),
         (r"/url/([0-9]+)/([0-9]+)/(.*)", URLHandler),
-        (r"/(.*)", ScramHandler),
         (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": os.path.join(os.path.dirname(__file__),"images/")}),
+        (r"/(.*)", ScramHandler),
         (r"/", ScramHandler),
     ])
     http_server = tornado.httpserver.HTTPServer(application)

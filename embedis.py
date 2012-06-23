@@ -88,8 +88,8 @@ class embedis:
                         SHA512.update(buf)
                     File.close()
                     digest = SHA512.hexdigest()
-                    img.save('/opt/Embedis/images/' + digest,format='png')
-                    return "<a href='self.url'><img src='/images/" + digest + "'></a>"
+                    img.save('/opt/Embedis/images/' + digest + '.png')
+                    return "<a href='" + self.url + "'><img src='/images/" + digest + ".png'></a>"
         except:
             return None
 
