@@ -10,8 +10,9 @@ class embedis:
         self.x = str(x)
         self.y = str(y)
 
-        self.functionlist =  [self.img,
+        self.functionlist =  [self.youtube,
                          self.vimeo,
+                         self.img,
                          self.embedly,
                         ]
 
@@ -66,7 +67,7 @@ class embedis:
         Check to see if it's a valid image
         """
         contents,headers = urllib.request.urlretrieve(self.url)
-        if "image" in headers['Content-Type']:
+        if headers['Content-Type'] in ['image/gif', 'image/jpeg', 'image/pjpeg','image/png']:
             return "<img src='" + self.url + "' />"
 
 
