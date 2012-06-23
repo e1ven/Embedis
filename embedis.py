@@ -1,6 +1,7 @@
 from urllib.parse import urlparse,parse_qs
 import urllib.request, urllib.parse, urllib.error
 import re,json,pprint
+import os
 import Image, hashlib
 
 class embedis:
@@ -76,22 +77,9 @@ class embedis:
                 if img.size[0] < int(self.x) and int(img.size[1]) < self.y:
                     return "<img src='" + self.url + "' />"
                 else:
-                    # There is a bug in PIL, where .thumbnail doesn't work right in 2.7+
-                    # So let's manually keep the aspect ratio
 
-                    imAspect = float(image.size[0])/float(image.size[1])
-
-                    if image.size[0] > int(self.x):
-                        newx = int(self.x)
-                        newy = int(self.x * imAspect)
-                    if image.size[1] > int(self.y):
-                        newy = int(self.y)
-                        newx = int(self.x * imAspect)
-                    
-
-                    img = img.resize((newx,newy),Image.NEAREST)
-
-                    #Hash the file in chunks
+                    # Hash the file in chunks. 
+                    # If we already have this file, we'll just use that one, rather than resizing.
                     SHA512 = hashlib.sha512()
                     File = open(filename, 'rb')
                     while True:
@@ -101,7 +89,26 @@ class embedis:
                         SHA512.update(buf)
                     File.close()
                     digest = SHA512.hexdigest()
-                    img.save('/opt/Embedis/images/' + digest + '.png')
+                    if not os.path.isfile('/opt/Embedis/images/' + digest + '.png'):
+
+                        # There is a bug in PIL, where .thumbnail doesn't work right in 2.7+
+                        # So let's manually keep the aspect ratio
+
+                        if img.size[0] > int(self.x):
+                            imAspect = float(img.size[1])/float(img.size[0])
+                            newx = int(self.x)
+                            newy = int(int(self.x) * imAspect)
+                            img = img.resize((newx,newy),Image.ANTIALIAS)
+
+
+                        if img.size[1] > int(self.y):
+                            imAspect = float(img.size[0])/float(img.size[1])
+                            newy = int(self.y)
+                            newx = int(int(self.y) * imAspect)
+                            img = img.resize((newx,newy),Image.ANTIALIAS)
+
+                        img.save('/opt/Embedis/images/' + digest + '.png')
+
                     return "<a target='_parent' href='" + self.url + "'><img src='/images/" + digest + ".png'></a>"
         except:
             return None
