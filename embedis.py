@@ -76,7 +76,7 @@ class embedis:
                 if img.size[0] < int(self.x) and int(img.size[1]) < self.y:
                     return "<img src='" + self.url + "' />"
                 else:
-                    img = img.resize((150,150),Image.ANTIALIAS)
+                    img = img.resize((self.x,self.y),Image.ANTIALIAS)
 
                     #Hash the file in chunks
                     SHA512 = hashlib.sha512()
