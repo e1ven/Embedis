@@ -37,7 +37,7 @@ class iframeHandler(BaseHandler):
             # Normally, I'd do a check for 'not None' but this string represents the query, it is literally empty.
             url = url + "?" + self.request.query
             
-        self.write("<iframe class='embedis' type='text/html' width='" + x + "' height='" + y  +"' src='http://embed.is/url/" +x + "/"+y+"/"+url +"' frameborder='0' marginheight='0' marginwidth='0' scrolling='no'></iframe>")
+        self.write("<iframe class='embedis' type='text/html' width='" + x + "' height='" + y  +"' src='http://embed.is/url/" +x + "/"+y+"/"+url +"' frameborder='0' marginheight='0' marginwidth='0' scrolling='no' sandbox='allow-scripts'></iframe>")
       
 class URLHandler(BaseHandler):
     def get(self,x,y,url):
