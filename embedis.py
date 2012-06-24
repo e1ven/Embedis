@@ -108,8 +108,9 @@ class embedis:
                             img = img.resize((newx,newy),Image.ANTIALIAS)
 
                         img.save('/opt/Embedis/images/' + digest + '.png')
-
-                    return "<a target='_parent' href='" + self.url + "'><img src='/images/" + digest + ".png'></a>"
+                    # We could return a HREF here, but we're not, since it'll be in the source anyway
+                    # And without having to allow top level navication in our iFrame sandbox, we're safer.
+                    return "<img src='/images/" + digest + ".png'>"
         except:
             return None
 
