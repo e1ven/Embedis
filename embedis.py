@@ -74,43 +74,40 @@ class embedis:
                 # The server claims it's an image.
                 img= Image.open(filename)
                 print("saved to "+ filename)
-                if img.size[0] < int(self.x) and int(img.size[1]) < self.y:
-                    return "<img src='" + self.url + "' />"
-                else:
-
-                    # Hash the file in chunks. 
-                    # If we already have this file, we'll just use that one, rather than resizing.
-                    SHA512 = hashlib.sha512()
-                    File = open(filename, 'rb')
-                    while True:
+   
+                # Hash the file in chunks. 
+                # If we already have this file, we'll just use that one, rather than resizing.
+                SHA512 = hashlib.sha512()
+                File = open(filename, 'rb')
+                while True:
                         buf = File.read(0x100000)
                         if not buf:
                             break
                         SHA512.update(buf)
-                    File.close()
-                    digest = SHA512.hexdigest()
-                    if not os.path.isfile('/opt/Embedis/images/' + digest + '.png'):
+                File.close()
+                digest = SHA512.hexdigest()
+                if not os.path.isfile('/opt/Embedis/images/' + digest + '.png'):
 
                         # There is a bug in PIL, where .thumbnail doesn't work right in 2.7+
                         # So let's manually keep the aspect ratio
 
-                        if img.size[0] > int(self.x):
+                    if img.size[0] > int(self.x):
                             imAspect = float(img.size[1])/float(img.size[0])
                             newx = int(self.x)
                             newy = int(int(self.x) * imAspect)
                             img = img.resize((newx,newy),Image.ANTIALIAS)
 
 
-                        if img.size[1] > int(self.y):
-                            imAspect = float(img.size[0])/float(img.size[1])
-                            newy = int(self.y)
-                            newx = int(int(self.y) * imAspect)
-                            img = img.resize((newx,newy),Image.ANTIALIAS)
+                    if img.size[1] > int(self.y):
+                        imAspect = float(img.size[0])/float(img.size[1])
+                        newy = int(self.y)
+                        newx = int(int(self.y) * imAspect)
+                        img = img.resize((newx,newy),Image.ANTIALIAS)
 
-                        img.save('/opt/Embedis/images/' + digest + '.png')
+                    img.save('/opt/Embedis/images/' + digest + '.png')
                     # We could return a HREF here, but we're not, since it'll be in the source anyway
                     # And without having to allow top level navication in our iFrame sandbox, we're safer.
-                    return "<img src='/images/" + digest + ".png'>"
+                return "<img src='/images/" + digest + ".png'>"
         except:
             return None
 
@@ -141,5 +138,6 @@ class embedis:
           return response['html']
         else:
           print("Can't find html")
+          print(response)
         f.close()
         return None
